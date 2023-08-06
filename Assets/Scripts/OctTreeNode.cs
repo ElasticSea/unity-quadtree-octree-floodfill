@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class OctTreeNode
 {
-    public OctTreeNode NodeSWD;
-    public OctTreeNode NodeSED;
-    public OctTreeNode NodeNWD;
-    public OctTreeNode NodeNED;
-    public OctTreeNode NodeSWU;
-    public OctTreeNode NodeSEU;
-    public OctTreeNode NodeNWU;
-    public OctTreeNode NodeNEU;
+    public OctTreeNode NodeWDS;
+    public OctTreeNode NodeWDN;
+    public OctTreeNode NodeWUS;
+    public OctTreeNode NodeWUN;
+    public OctTreeNode NodeEDS;
+    public OctTreeNode NodeEDN;
+    public OctTreeNode NodeEUS;
+    public OctTreeNode NodeEUN;
     
     public readonly Vector3Int position;
     public readonly int level;

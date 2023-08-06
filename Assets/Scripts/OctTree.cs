@@ -129,40 +129,40 @@ public class OctTree
                 switch (direction)
                 {
                     case Direction.Left:
-                        GetNodeNeighbours(node.NodeSED, direction, list);
-                        GetNodeNeighbours(node.NodeNED, direction, list);
-                        GetNodeNeighbours(node.NodeSEU, direction, list);
-                        GetNodeNeighbours(node.NodeNEU, direction, list);
+                        GetNodeNeighbours(node.NodeEDS, direction, list);
+                        GetNodeNeighbours(node.NodeEDN, direction, list);
+                        GetNodeNeighbours(node.NodeEUS, direction, list);
+                        GetNodeNeighbours(node.NodeEUN, direction, list);
                         break;
                     case Direction.Right:
-                        GetNodeNeighbours(node.NodeSWD, direction, list);
-                        GetNodeNeighbours(node.NodeNWD, direction, list);
-                        GetNodeNeighbours(node.NodeSWU, direction, list);
-                        GetNodeNeighbours(node.NodeNWU, direction, list);
+                        GetNodeNeighbours(node.NodeWDS, direction, list);
+                        GetNodeNeighbours(node.NodeWDN, direction, list);
+                        GetNodeNeighbours(node.NodeWUS, direction, list);
+                        GetNodeNeighbours(node.NodeWUN, direction, list);
                         break;
                     case Direction.Up:
-                        GetNodeNeighbours(node.NodeSWD, direction, list);
-                        GetNodeNeighbours(node.NodeSED, direction, list);
-                        GetNodeNeighbours(node.NodeNWD, direction, list);
-                        GetNodeNeighbours(node.NodeNED, direction, list);
+                        GetNodeNeighbours(node.NodeWDS, direction, list);
+                        GetNodeNeighbours(node.NodeWDN, direction, list);
+                        GetNodeNeighbours(node.NodeEDS, direction, list);
+                        GetNodeNeighbours(node.NodeEDN, direction, list);
                         break;
                     case Direction.Down:
-                        GetNodeNeighbours(node.NodeSWU, direction, list);
-                        GetNodeNeighbours(node.NodeSEU, direction, list);
-                        GetNodeNeighbours(node.NodeNWU, direction, list);
-                        GetNodeNeighbours(node.NodeNEU, direction, list);
+                        GetNodeNeighbours(node.NodeWUS, direction, list);
+                        GetNodeNeighbours(node.NodeWUN, direction, list);
+                        GetNodeNeighbours(node.NodeEUS, direction, list);
+                        GetNodeNeighbours(node.NodeEUN, direction, list);
                         break;
                     case Direction.Forward:
-                        GetNodeNeighbours(node.NodeSWD, direction, list);
-                        GetNodeNeighbours(node.NodeSED, direction, list);
-                        GetNodeNeighbours(node.NodeSWU, direction, list);
-                        GetNodeNeighbours(node.NodeSEU, direction, list);
+                        GetNodeNeighbours(node.NodeWDS, direction, list);
+                        GetNodeNeighbours(node.NodeWUS, direction, list);
+                        GetNodeNeighbours(node.NodeEDS, direction, list);
+                        GetNodeNeighbours(node.NodeEUS, direction, list);
                         break;
                     case Direction.Back:
-                        GetNodeNeighbours(node.NodeNWD, direction, list);
-                        GetNodeNeighbours(node.NodeNED, direction, list);
-                        GetNodeNeighbours(node.NodeNWU, direction, list);
-                        GetNodeNeighbours(node.NodeNEU, direction, list);
+                        GetNodeNeighbours(node.NodeWDN, direction, list);
+                        GetNodeNeighbours(node.NodeWUN, direction, list);
+                        GetNodeNeighbours(node.NodeEDN, direction, list);
+                        GetNodeNeighbours(node.NodeEUN, direction, list);
                         break;
                 }
             }
@@ -189,30 +189,35 @@ public class OctTree
 
         if (node.isLeaf)
         {
-            var m = node.bounds.min;
-            var size = (node.bounds.max - node.bounds.min) / 2;
-
-            var childCoords = new Vector3Int(node.position.x * 2, node.position.y * 2, node.position.z * 2);
-            var childLevel = node.level + 1;
-            node.NodeSWD = AddNode(childCoords + new Vector3Int(0, 0, 0), childLevel, m + new Vector3(0, 0, 0), size);
-            node.NodeSED = AddNode(childCoords + new Vector3Int(1, 0, 0), childLevel, m + new Vector3(size.x, 0, 0), size);
-            node.NodeNWD = AddNode(childCoords + new Vector3Int(0, 1, 0), childLevel, m + new Vector3(0, size.y, 0), size);
-            node.NodeNED = AddNode(childCoords + new Vector3Int(1, 1, 0), childLevel, m + new Vector3(size.x, size.y, 0), size);
-            node.NodeSWU = AddNode(childCoords + new Vector3Int(0, 0, 1), childLevel, m + new Vector3(0, 0, size.z), size);
-            node.NodeSEU = AddNode(childCoords + new Vector3Int(1, 0, 1), childLevel, m + new Vector3(size.x, 0, size.z), size);
-            node.NodeNWU = AddNode(childCoords + new Vector3Int(0, 1, 1), childLevel, m + new Vector3(0, size.y, size.z), size);
-            node.NodeNEU = AddNode(childCoords + new Vector3Int(1, 1, 1), childLevel, m + new Vector3(size.x, size.y, size.z), size);
+            node.NodeWDS = AddChildNode(node, new Vector3Int(0, 0, 0));
+            node.NodeWDN = AddChildNode(node, new Vector3Int(0, 0, 1));
+            node.NodeWUS = AddChildNode(node, new Vector3Int(0, 1, 0));
+            node.NodeWUN = AddChildNode(node, new Vector3Int(0, 1, 1));
+            node.NodeEDS = AddChildNode(node, new Vector3Int(1, 0, 0));
+            node.NodeEDN = AddChildNode(node, new Vector3Int(1, 0, 1));
+            node.NodeEUS = AddChildNode(node, new Vector3Int(1, 1, 0));
+            node.NodeEUN = AddChildNode(node, new Vector3Int(1, 1, 1));
             node.isLeaf = false;
         }
 
-        Insert(node.NodeSWD, rBounds);
-        Insert(node.NodeSED, rBounds);
-        Insert(node.NodeNWD, rBounds);
-        Insert(node.NodeNED, rBounds);
-        Insert(node.NodeSWU, rBounds);
-        Insert(node.NodeSEU, rBounds);
-        Insert(node.NodeNWU, rBounds);
-        Insert(node.NodeNEU, rBounds);
+        Insert(node.NodeWDS, rBounds);
+        Insert(node.NodeWDN, rBounds);
+        Insert(node.NodeWUS, rBounds);
+        Insert(node.NodeWUN, rBounds);
+        Insert(node.NodeEDS, rBounds);
+        Insert(node.NodeEDN, rBounds);
+        Insert(node.NodeEUS, rBounds);
+        Insert(node.NodeEUN, rBounds);
+    }
+
+    private OctTreeNode AddChildNode(OctTreeNode node, Vector3Int offset)
+    {
+        var position = node.position;
+        var parentMin = node.bounds.min;
+        var baseCoords = new Vector3Int(position.x * 2, position.y * 2, position.z * 2);
+        var childSize = (node.bounds.max - node.bounds.min) / 2;
+        var childMin = parentMin + new Vector3(offset.x * childSize.x, offset.y * childSize.y, offset.z * childSize.z);
+        return AddNode(baseCoords + offset, node.level + 1, childMin, childSize);
     }
 
     private OctTreeNode AddNode(Vector3Int coords, int level, Vector3 min, Vector3 size)
