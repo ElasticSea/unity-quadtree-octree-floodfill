@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -8,6 +9,8 @@ public class GenerateQuadTree : MonoBehaviour
     private QuadTree quadtree;
 
     [SerializeField] private Transform[] occupants;
+
+    public QuadTree Quadtree => quadtree;
 
     private void Update()
     {
@@ -23,9 +26,7 @@ public class GenerateQuadTree : MonoBehaviour
     
     private void OnDrawGizmos()
     {
-        Gizmos.matrix = transform.localToWorldMatrix;
-        
-        void DrawOctree((Vector2Int pos, Rect bounds, bool occupied, bool isLeaf) octree)
+        void DrawOctree((Vector3Int pos, Rect bounds, bool occupied, bool isLeaf) octree)
         {
             if (octree.isLeaf )
             {
