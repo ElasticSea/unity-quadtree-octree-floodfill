@@ -25,19 +25,19 @@ public class OctTree
         return nodes.Values.ToArray();
     }
 
-    public OctTreeNode GetNode(Vector2 position)
+    public OctTreeNode GetNode(Vector3 position)
     {
         var teoreticalNode = GetNode(position, maxLevel);
         return GetNodeOrParent(teoreticalNode, maxLevel);
     }
 
-    private Vector3Int GetNode(Vector2 position, int level)
+    private Vector3Int GetNode(Vector3 position, int level)
     {
         var nodesCount = Mathf.Pow(2, level);
         var rootBounds = root.bounds;
         var xpos = (int)(Mathf.InverseLerp(rootBounds.min.x, rootBounds.max.x, position.x) * nodesCount);
         var ypos = (int)(Mathf.InverseLerp(rootBounds.min.y, rootBounds.max.y, position.y) * nodesCount);
-        var zpos = (int)(Mathf.InverseLerp(rootBounds.min.z, rootBounds.max.z, position.y) * nodesCount);
+        var zpos = (int)(Mathf.InverseLerp(rootBounds.min.z, rootBounds.max.z, position.z) * nodesCount);
         return new Vector3Int(xpos, ypos, zpos);
     }
 
