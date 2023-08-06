@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class GenerateQuadTree : MonoBehaviour
 {
@@ -6,10 +7,18 @@ public class GenerateQuadTree : MonoBehaviour
     
     private QuadTree quadtree;
 
-    private void Awake()
+    [SerializeField] private Transform[] occupants;
+
+    private void Update()
     {
         quadtree = new QuadTree(new Rect(0, 0, 1, 1), maxLevel);
-        quadtree.Insert(new Rect(0.61f, 0.86f, 0, 0));
+        foreach (var occupant in occupants)
+        {
+            if (occupant)
+            {
+                quadtree.Insert(new Rect(occupant.position.x, occupant.position.y, 0, 0));
+            }
+        }
     }
     
     private void OnDrawGizmos()
