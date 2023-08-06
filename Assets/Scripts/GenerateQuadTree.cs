@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class GenerateQuadTree : MonoBehaviour
 {
@@ -25,7 +23,7 @@ public class GenerateQuadTree : MonoBehaviour
     
     private void OnDrawGizmos()
     {
-        void DrawOctree((Vector3Int pos, Rect bounds, bool occupied, bool isLeaf) octree)
+        void DrawOctree(QuadTreeNode octree)
         {
             if (octree.isLeaf )
             {

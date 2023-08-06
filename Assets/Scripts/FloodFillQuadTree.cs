@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FloodFillQuadTree : MonoBehaviour
 {
     [SerializeField] private GenerateQuadTree tree;
     
-    private IEnumerable<Vector3Int> current;
-    private IEnumerable<Vector3Int> done;
+    private HashSet<QuadTreeNode> current;
+    private HashSet<QuadTreeNode> done;
 
     private void OnDrawGizmosSelected()
     {
@@ -31,7 +32,7 @@ public class FloodFillQuadTree : MonoBehaviour
         {
             foreach (var node in done)
             {
-                DrawRect(tree.Quadtree.GetBounds(node), Color.green, true);
+                DrawRect(node.bounds, Color.green, true);
             }
         }
 
@@ -39,30 +40,42 @@ public class FloodFillQuadTree : MonoBehaviour
         {
             foreach (var node in current)
             {
-                DrawRect(tree.Quadtree.GetBounds(node), Color.yellow, true);
+                DrawRect(node.bounds, Color.yellow, true);
             }
         }
 
-        DrawRect(tree.Quadtree.GetBounds(tree.Quadtree.GetNode(transform.position)), Color.magenta, false);
+        DrawRect(tree.Quadtree.GetNode(transform.position).bounds, Color.magenta, false);
     }
 
     public void Next()
     {
         if (current == null || current.Any() == false)
         {
-            current = new[] { tree.Quadtree.GetNode(transform.position) };
+            current = new HashSet<QuadTreeNode> { tree.Quadtree.GetNode(transform.position) };
         }
         else
         {
-            
-            
-            done = current;
-            current = done.SelectMany(d => tree.Quadtree.GetNodeNeighbours(d)).Distinct().Where(
-                d => tree.Quadtree.IsOccupied(d) == false).ToArray();
+            if (done == null)
+            {
+                done = new HashSet<QuadTreeNode>();
+            }
+            done.AddRange(current);
+
+            current = new HashSet<QuadTreeNode>();
+            foreach (var d in done)
+            {
+                var neighbours = tree.Quadtree.GetNodeNeighbours(d);
+                foreach (var n in neighbours)
+                {
+                    if (n.occupied == false)
+                    {
+                        if (done.Contains(n) == false)
+                        {
+                            current.Add(n);
+                        }
+                    }
+                }
+            }
         }
-        
-        // current = quadtree.GetNode(transform.position, level);
-        // neighbours = quadtree.GetNodeNeighbours(current);
-        // throw new System.NotImplementedException();
     }
 }
