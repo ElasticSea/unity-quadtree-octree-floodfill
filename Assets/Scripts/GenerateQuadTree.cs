@@ -15,12 +15,11 @@ public class GenerateQuadTree : MonoBehaviour
     private void Update()
     {
         quadtree = new QuadTree(new Rect(0, 0, 1, 1), maxLevel);
-        foreach (var occupant in occupants)
+        foreach (var occupant in FindObjectsOfType<Collider2D>())
         {
-            if (occupant)
-            {
-                quadtree.Insert(new Rect(occupant.position.x, occupant.position.y, 0, 0));
-            }
+            var worldBounds = occupant.bounds;
+            var rect = new Rect(worldBounds.min.x, worldBounds.min.y, worldBounds.size.x, worldBounds.size.y);
+            quadtree.Insert(rect);
         }
     }
     

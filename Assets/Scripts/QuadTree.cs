@@ -26,6 +26,12 @@ public class QuadTree
         return root.GetNodes();
     }
 
+    public Vector3Int GetNode(Vector2 position)
+    {
+        var teoreticalNode = GetNode(position, maxLevel);
+        return GetNodeOrParent(teoreticalNode);
+    }
+
     public Vector3Int GetNode(Vector2 position, int level)
     {
         level = Mathf.Clamp(level, 0, maxLevel);
@@ -34,6 +40,26 @@ public class QuadTree
         var xpos = (int)(Mathf.InverseLerp(rootBounds.xMin, rootBounds.xMax, position.x) * nodesCount);
         var ypos = (int)(Mathf.InverseLerp(rootBounds.yMin, rootBounds.yMax, position.y) * nodesCount);
         return new Vector3Int(xpos, ypos, level);
+    }
+
+    public bool IsOccupied(Vector3Int coords)
+    {
+        if (nodes.TryGetValue(coords, out var node))
+        {
+            return node.occupied;
+        }
+
+        return default;
+    }
+
+    public Rect GetBounds(Vector3Int coords)
+    {
+        if (nodes.TryGetValue(coords, out var node))
+        {
+            return node.bounds;
+        }
+
+        return default;
     }
     
     private enum Direction
@@ -84,6 +110,11 @@ public class QuadTree
         return coords;
     }
 
+    private Vector3Int GetParent(Vector3Int coords)
+    {
+        return new Vector3Int(coords.x / 2, coords.y / 2, coords.z - 1);
+    }
+
     private bool IsOutOfBounds(Vector3Int coords)
     {
         var nodesCount = Mathf.Pow(2, coords.z);
@@ -129,16 +160,6 @@ public class QuadTree
     {
         return nodes.ContainsKey(coords);
     }
-
-    public Rect GetBounds(Vector3Int coords)
-    {
-        if (nodes.TryGetValue(coords, out var node))
-        {
-            return node.bounds;
-        }
-
-        return default;
-    }
     
 
     // public IEnumerable<Rect> GetNeighbours(int x, int y, int level)
@@ -152,11 +173,6 @@ public class QuadTree
     //     var foundNode = position;
     // }
 
-    private Vector3Int GetParent(Vector3Int coords)
-    {
-        return new Vector3Int(coords.x / 2, coords.y / 2, coords.z - 1);
-    }
-
     private class QuadTreeNode
     {
         public QuadTreeNode NodeSW;
@@ -168,7 +184,7 @@ public class QuadTree
         public readonly Rect bounds;
         public readonly bool isMaxLevel;
         public bool isLeaf;
-        // public bool occupied;
+        public bool occupied;
 
         public QuadTreeNode(QuadTree tree, Vector3Int coords, Vector2 min, Vector2 size)
         {
@@ -189,7 +205,7 @@ public class QuadTree
 
             if (isMaxLevel)
             {
-                // occupied = true;
+                occupied = true;
                 return;
             }
 
@@ -214,7 +230,7 @@ public class QuadTree
 
         public IEnumerable<(Vector3Int pos, Rect bounds, bool occupied, bool isLeaf)> GetNodes()
         {
-            yield return (coords, bounds, false, isLeaf);
+            yield return (coords, bounds, occupied, isLeaf);
             if (NodeSW != null) foreach(var node in NodeSW.GetNodes()) yield return node;
             if (NodeSE != null) foreach(var node in NodeSE.GetNodes()) yield return node;
             if (NodeNW != null) foreach(var node in NodeNW.GetNodes()) yield return node;
